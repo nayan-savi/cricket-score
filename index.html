@@ -277,6 +277,12 @@
             balls = 0;
             overs = 0;
         }
+        function restoreLogs() {
+            actions.forEach(action => logAction(action.runs, action.type));
+        }
+
+        updateDisplay();
+        restoreLogs();
     </script>
 </body>
 </html>
