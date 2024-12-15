@@ -154,7 +154,7 @@
     </div>
 
     <script>
-        let score = 0;
+       /* let score = 0;
         let wickets = 0;
         let balls = 0;
         let overs = 0;
@@ -170,7 +170,33 @@
             document.getElementById('wickets').textContent = wickets;
             document.getElementById('overs').textContent = overs;
             document.getElementById('balls').textContent = balls;
+        }*/
+
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let wickets = parseInt(localStorage.getItem('wickets')) || 0;
+        let balls = parseInt(localStorage.getItem('balls')) || 0;
+        let overs = parseInt(localStorage.getItem('overs')) || 0;
+        let actions = JSON.parse(localStorage.getItem('actions')) || [];
+
+        const logContainer = document.getElementById('logContainer');
+        const popup = document.getElementById('popup');
+        const overlay = document.getElementById('overlay');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupButtons = document.getElementById('popupButtons');
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('wickets').textContent = wickets;
+            document.getElementById('overs').textContent = overs;
+            document.getElementById('balls').textContent = balls;
+            localStorage.setItem('score', score);
+            localStorage.setItem('wickets', wickets);
+            localStorage.setItem('balls', balls);
+            localStorage.setItem('overs', overs);
+            localStorage.setItem('actions', JSON.stringify(actions));
         }
+
+       
 
         function addRuns(runs) {
             score += runs;
