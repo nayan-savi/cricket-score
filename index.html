@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Score Counter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 90%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .score {
+            font-size: 1.5em;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .buttons button {
+            background: #3498db;
+            color: #fff;
+            padding: 10px 15px;
+            margin: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .buttons button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+        .reset-btn {
+            background: #e74c3c;
+        }
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+        .log-container {
+            margin: 20px 0;
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #f1f1f1;
+            max-width: 100%;
+        }
+        .log-container .ball-log {
+            background: #3498db;
+            color: #fff;
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            min-height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-right: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+            flex-shrink: 0;
+            position: relative;
+            text-align: center;
+        }
+        .ball-log .runs {
+            font-size: 1em;
+        }
+        .ball-log .label {
+            font-size: 0.6em;
+            position: absolute;
+            bottom: -15px;
+            color: #2c3e50;
+            font-weight: normal;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 10;
+        }
+        .popup button {
+            background: #3498db;
+            color: #fff;
+            padding: 10px 15px;
+            margin: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background: #2980b9;
+        }
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏏 Cricket Score Counter</h1>
+        <div class="score">
+            Score: <span id="score">0</span>/<span id="wickets">0</span>
+        </div>
+        <div class="score">
+            Overs: <span id="overs">0</span>.<span id="balls">0</span>
+        </div>
+
+        <div class="log-container" id="logContainer"></div>
+
+        <div class="buttons">
+            <button onclick="addRuns(1)">1 Run</button>
+            <button onclick="showPopup('Wide')">Wide</button>
+            <button onclick="showPopup('No Ball')">No Ball</button>
+            <button onclick="showPopup('Bye')">Bye</button>
+            <button onclick="showPopup('Leg Bye')">Leg Bye</button>
+            <button onclick="addWicket()">Wicket</button>
+        </div>
+
+        <button class="reset-btn" onclick="resetScore()">Reset</button>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup" id="popup">
+        <h3 id="popupTitle"></h3>
+        <div id="popupButtons"></div>
+    </div>
+
+    <script>
+        let score = 0;
+        let wickets = 0;
+        let balls = 0;
+        let overs = 0;
+        const maxWickets = 10;
+        const logContainer = document.getElementById('logContainer');
+        const popup = document.getElementById('popup');
+        const popupOverlay = document.getElementById('popupOverlay');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupButtons = document.getElementById('popupButtons');
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('wickets').textContent = wickets;
+            document.getElementById('overs').textContent = overs;
+            document.getElementById('balls').textContent = balls;
+        }
+
+        function logAction(runs, label = '') {
+            const ballLog = document.createElement('div');
+            ballLog.className = 'ball-log';
+            ballLog.innerHTML = `<div class="runs">${runs}</div><div class="label">${label}</div>`;
+            logContainer.appendChild(ballLog);
+            logContainer.scrollTo({ left: logContainer.scrollWidth, behavior: 'smooth' });
+        }
+
+        function showPopup(type) {
+            popupTitle.textContent = `Select Runs for ${type}`;
+            popupButtons.innerHTML = '';
+            [0, 1, 2, 3, 4, 5, 6].forEach(runs => {
+                const button = document.createElement('button');
+                button.textContent = `${type} + ${runs}`;
+                button.onclick = () => {
+                    handleExtra(type, runs);
+                    hidePopup();
+                };
+                popupButtons.appendChild(button);
+            });
+            popupOverlay.style.display = 'block';
+            popup.style.display = 'block';
+        }
+
+        function hidePopup() {
+            popupOverlay.style.display = 'none';
+            popup.style.display = 'none';
+        }
+
+        function handleExtra(type, runs) {
+            if (type === 'Wide') {
+                score += 1 + runs;
+                logAction(runs || 'WD', 'WD');
+            } else if (type === 'No Ball') {
+                score += 1 + runs;
+                logAction(runs || 'NB', 'NB');
+            } else if (type === 'Bye') {
+                addBall();
+                score += runs;
+                logAction(runs, 'B');
+            } else if (type === 'Leg Bye') {
+                addBall();
+                score += runs;
+                logAction(runs, 'LB');
+            }
+            updateDisplay();
+        }
+
+        function addRuns(runs) {
+            if (wickets < maxWickets) {
+                score += runs;
+                addBall();
+                logAction(runs);
+            }
+        }
+
+        function addWicket() {
+            if (wickets < maxWickets) {
+                wickets += 1;
+                addBall();
+                logAction('W');
+            }
+        }
+
+        function addBall() {
+            balls += 1;
+            if (balls >= 6) {
+                overs += 1;
+                balls = 0;
+            }
+            updateDisplay();
+        }
+
+        function resetScore() {
+            score = 0;
+            wickets = 0;
+            balls = 0;
+            overs = 0;
+            logContainer.innerHTML = '';
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
