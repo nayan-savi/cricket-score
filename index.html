@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Score</title>
+    <title>Cricket Score Counter with Extras, Undo, and Session Storage</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -60,6 +60,7 @@
             border-radius: 8px;
             background: #f1f1f1;
             max-width: 100%;
+            height: 50px;
         }
         .log-container .ball-log {
             background: #3498db;
@@ -131,7 +132,7 @@
         <div class="log-container" id="logContainer"></div>
 
         <div class="buttons">
-             <button onclick="addRuns(0)">0</button>
+            <button onclick="addRuns(0)">0</button>
             <button onclick="addRuns(1)">1</button>
             <button onclick="addRuns(2)">2</button>
             <button onclick="addRuns(3)">3</button>
@@ -143,6 +144,7 @@
             <button onclick="showPopup('LB')">LB</button>
             <button onclick="addWicket()">OUT</button>
             <button onclick="undo()">UNDO</button>
+            
         </div>
     </div>
 
@@ -154,29 +156,11 @@
     </div>
 
     <script>
-       /* let score = 0;
-        let wickets = 0;
-        let balls = 0;
-        let overs = 0;
-        let actions = [];
-        const logContainer = document.getElementById('logContainer');
-        const popup = document.getElementById('popup');
-        const overlay = document.getElementById('overlay');
-        const popupTitle = document.getElementById('popupTitle');
-        const popupButtons = document.getElementById('popupButtons');
-
-        function updateDisplay() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('wickets').textContent = wickets;
-            document.getElementById('overs').textContent = overs;
-            document.getElementById('balls').textContent = balls;
-        }*/
-
-        let score = parseInt(localStorage.getItem('score')) || 0;
-        let wickets = parseInt(localStorage.getItem('wickets')) || 0;
-        let balls = parseInt(localStorage.getItem('balls')) || 0;
-        let overs = parseInt(localStorage.getItem('overs')) || 0;
-        let actions = JSON.parse(localStorage.getItem('actions')) || [];
+        let score = parseInt(sessionStorage.getItem('score')) || 0;
+        let wickets = parseInt(sessionStorage.getItem('wickets')) || 0;
+        let balls = parseInt(sessionStorage.getItem('balls')) || 0;
+        let overs = parseInt(sessionStorage.getItem('overs')) || 0;
+        let actions = JSON.parse(sessionStorage.getItem('actions')) || [];
 
         const logContainer = document.getElementById('logContainer');
         const popup = document.getElementById('popup');
@@ -189,19 +173,17 @@
             document.getElementById('wickets').textContent = wickets;
             document.getElementById('overs').textContent = overs;
             document.getElementById('balls').textContent = balls;
-            localStorage.setItem('score', score);
-            localStorage.setItem('wickets', wickets);
-            localStorage.setItem('balls', balls);
-            localStorage.setItem('overs', overs);
-            localStorage.setItem('actions', JSON.stringify(actions));
+            sessionStorage.setItem('score', score);
+            sessionStorage.setItem('wickets', wickets);
+            sessionStorage.setItem('balls', balls);
+            sessionStorage.setItem('overs', overs);
+            sessionStorage.setItem('actions', JSON.stringify(actions));
         }
 
-       
-
-        function addRuns(runs) {
+        function addRuns(runs, type = '') {
             score += runs;
             addBall();
-            logAction(runs);
+            logAction(runs, type);
         }
 
         function addWicket() {
@@ -219,51 +201,30 @@
             updateDisplay();
         }
 
-        function showPopup(type) {
-            popup.style.display = 'block';
-            overlay.style.display = 'block';
-            popupTitle.textContent = `Select Runs for ${type}`;
-            popupButtons.innerHTML = '';
-
-            for (let i = 0; i <= 6; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = `${type} + ${i}`;
-                btn.onclick = () => {
-                    handleExtra(type, i);
-                    hidePopup();
-                };
-                popupButtons.appendChild(btn);
-            }
-        }
-
-        function handleExtra(type, runs) {
-            score += 1 + runs; // 1 for the extra plus any additional runs
-            logAction(runs, type);
-            updateDisplay();
-        }
-
         function logAction(runs, type = '') {
-            actions.push({ runs, type, overs, balls, score, wickets });
+            actions.push({ runs, type });
             const log = document.createElement('div');
             log.className = 'ball-log';
             log.innerHTML = `<div>${runs}</div>${type ? `<div>${type}</div>` : ''}`;
             logContainer.appendChild(log);
             logContainer.scrollLeft = logContainer.scrollWidth;
+            updateDisplay();
         }
 
-        function undo() {
-            if (actions.length === 0) return;
-            actions.pop();
-            resetState();
-            actions.forEach(action => {
-                score = action.score;
-                wickets = action.wickets;
-                overs = action.overs;
-                balls = action.balls;
-            });
-            updateDisplay();
-            logContainer.innerHTML = '';
-            actions.forEach(action => logAction(action.runs, action.type));
+        function showPopup(type) {
+            popupTitle.textContent = `Select ${type}`;
+            popupButtons.innerHTML = '';
+            for (let i = 0; i <= 6; i++) {
+                const button = document.createElement('button');
+                button.textContent = `${type} + ${i}`;
+                button.onclick = () => {
+                    addRuns(i + 1, type);
+                    hidePopup();
+                };
+                popupButtons.appendChild(button);
+            }
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
         }
 
         function hidePopup() {
@@ -271,18 +232,29 @@
             overlay.style.display = 'none';
         }
 
+        function undo() {
+            if (actions.length === 0) return;
+            actions.pop();
+            resetState();
+            actions.forEach(action => addRuns(action.runs, action.type));
+        }
+
+        function resetGame() {
+            sessionStorage.clear();
+            location.reload();
+        }
+
         function resetState() {
             score = 0;
             wickets = 0;
             balls = 0;
             overs = 0;
-        }
-        function restoreLogs() {
-            actions.forEach(action => logAction(action.runs, action.type));
+            logContainer.innerHTML = '';
+            updateDisplay();
         }
 
         updateDisplay();
-        restoreLogs();
+        actions.forEach(action => addRuns(action.runs, action.type));
     </script>
 </body>
 </html>
