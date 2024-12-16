@@ -1,257 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cricket Score</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background: #fff;
-            color: #2c3e50;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
-            max-width: 700px;
-            width: 90%;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-        .score {
-            font-size: 1.5em;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-        .buttons button {
-            background: #3498db;
-            color: #fff;
-            padding: 10px 15px;
-            margin: 8px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        .buttons button:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-        .log-container {
-            margin: 20px 0;
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background: #f1f1f1;
-            max-width: 100%;
-            height: 50px;
-        }
-        .log-container .ball-log {
-            background: #3498db;
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            min-width: 50px;
-            min-height: 50px;
-            border-radius: 50%;
-            display: inline-flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-right: 5px;
-            font-size: 0.9em;
-            font-weight: bold;
-            flex-shrink: 0;
-            position: relative;
-            text-align: center;
-        }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            color: #2c3e50;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-            text-align: center;
-        }
-        .popup button {
-            background: #2980b9;
-            color: #fff;
-            margin: 5px;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .popup .cancel-btn {
-            background: #e74c3c;
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 5;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        /* background: linear-gradient(135deg, #2c3e50, #3498db); */
+        color: #fff;
+        /* margin: 0; */
+        padding: 0;
+        display: flex;
+        /* justify-content: center; */
+        /* align-items: center; */
+        min-height: 100vh;
+      }
+      .container {
+        background: #fff;
+        color: #2c3e50;
+        padding: 20px;
+        border-radius: 12px;
+        /* box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3); */
+        max-width: 700px;
+        width: 90%;
+        text-align: center;
+      }
+      h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+      .score-container {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+      }
+      .score {
+        font-size: 2.5em;
+        margin: 10px 0;
+        font-weight: bold;
+      }
+      .over {
+        margin: 35px 0;
+      }
+      .buttons button {
+        background: #3498db;
+        color: #fff;
+        padding: 10px 15px;
+        margin: 8px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+      .buttons button:hover {
+        background: #2980b9;
+        transform: scale(1.05);
+      }
+      .log-container {
+        margin: 20px 0;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #f1f1f1;
+        max-width: 100%;
+        height: 50px;
+      }
+      .log-container .ball-log {
+        background: #3498db;
+        color: #fff;
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+        border-radius: 50%;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-right: 5px;
+        font-size: 0.9em;
+        font-weight: bold;
+        flex-shrink: 0;
+        position: relative;
+        text-align: center;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        color: #2c3e50;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        text-align: center;
+      }
+      .popup button {
+        background: #2980b9;
+        color: #fff;
+        margin: 5px;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .popup .cancel-btn {
+        background: #e74c3c;
+      }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 5;
+      }
+      table {
+        width: 100%;
+        font-size: 1.8rem;
+      }
+      td {
+        padding: 10px;
+        border: 1px solid grey;
+      }
+      .red {
+        background: #e74c3c !important;
+      }
+      .extra {
+        background: gray !important;
+      }
+      .run {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .four {
+        background: orange !important;
+      }
+      .six {
+        background: green !important;
+      }
+      .shade {
+        background: lightgray;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🏏 Cricket Score</h1>
+      <h1>🏏 Cricket Score</h1>
+      <div class="score-container">
         <div class="score">
-            Score: <span id="score">0</span>/<span id="wickets">0</span>
+          <span id="score">0</span>/<span id="wickets">0</span>
         </div>
-        <div class="score">
-            Overs: <span id="overs">0</span>.<span id="balls">0</span>
+        <div class="over">
+          (<span id="overs">0</span>.<span id="balls">0</span>/)
         </div>
+      </div>
 
-        <div class="log-container" id="logContainer"></div>
+      <div class="log-container" id="logContainer"></div>
 
-        <div class="buttons">
-             <button onclick="addRuns(0)">0</button>
-            <button onclick="addRuns(1)">1</button>
-            <button onclick="addRuns(2)">2</button>
-            <button onclick="addRuns(3)">3</button>
-            <button onclick="addRuns(4)">4</button>
-            <button onclick="addRuns(6)">6</button>
-            <button onclick="showPopup('WD')">WD</button>
-            <button onclick="showPopup('NB')">NB</button>
-            <button onclick="showPopup('BY')">BYE</button>
-            <button onclick="showPopup('LB')">LB</button>
-            <button onclick="addWicket()">OUT</button>
-            <button onclick="undo()">UNDO</button>
-        </div>
+      <div class="buttons">
+        <table>
+          <tr>
+            <td onclick="addRuns(0)">0</td>
+            <td onclick="addRuns(1)">1</td>
+            <td onclick="addRuns(2)">2</td>
+            <td class="shade" onclick="undo()">UNDO</td>
+          </tr>
+          <tr>
+            <td onclick="addRuns(3)">3</td>
+            <td onclick="addRuns(4)">4</td>
+            <td onclick="addRuns(6)">6</td>
+            <td class="shade" onclick="addWicket()">OUT</td>
+          </tr>
+          <tr>
+            <td class="shade" onclick="showPopup('WD')">WD</td>
+            <td class="shade" onclick="showPopup('NB')">NB</td>
+            <td class="shade" onclick="showPopup('BY')">BYE</td>
+            <td class="shade" onclick="showPopup('LB')">LB</td>
+          </tr>
+          <!-- <tr>
+            <td colspan="4">
+              <button class="cancel-btn" onclick="hidePopup()">
+                Clear cache
+              </button>
+            </td>
+          </tr> -->
+        </table>
+      </div>
     </div>
 
     <div class="overlay" id="overlay" onclick="hidePopup()"></div>
     <div class="popup" id="popup">
-        <h3 id="popupTitle"></h3>
-        <div id="popupButtons"></div>
-        <button class="cancel-btn" onclick="hidePopup()">Cancel</button>
+      <h3 id="popupTitle"></h3>
+      <div id="popupButtons"></div>
+      <button class="cancel-btn" onclick="hidePopup()">Cancel</button>
     </div>
 
     <script>
-        let score = 0;
-        let wickets = 0;
-        let balls = 0;
-        let overs = 0;
-        let actions = [];
-        const logContainer = document.getElementById('logContainer');
-        const popup = document.getElementById('popup');
-        const overlay = document.getElementById('overlay');
-        const popupTitle = document.getElementById('popupTitle');
-        const popupButtons = document.getElementById('popupButtons');
+      let score = 0;
+      let wickets = 0;
+      let balls = 0;
+      let overs = 0;
+      let actions = [];
+      const logContainer = document.getElementById("logContainer");
+      const popup = document.getElementById("popup");
+      const overlay = document.getElementById("overlay");
+      const popupTitle = document.getElementById("popupTitle");
+      const popupButtons = document.getElementById("popupButtons");
 
-        function updateDisplay() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('wickets').textContent = wickets;
-            document.getElementById('overs').textContent = overs;
-            document.getElementById('balls').textContent = balls;
+      function updateDisplay() {
+        document.getElementById("score").textContent = score;
+        document.getElementById("wickets").textContent = wickets;
+        document.getElementById("overs").textContent = overs;
+        document.getElementById("balls").textContent = balls;
+        saveToSessionStorage();
+      }
+
+      function addRuns(runs) {
+        score += runs;
+        addBall();
+        const cssClass = runs == 4 ? "four" : runs == 6 ? "six" : "run";
+        logAction(runs, cssClass);
+      }
+
+      function addWicket() {
+        wickets += 1;
+        addBall();
+        logAction("W", "red");
+      }
+
+      function addBall() {
+        balls += 1;
+        if (balls >= 6) {
+          overs += 1;
+          balls = 0;
         }
+        updateDisplay();
+      }
 
-        function addRuns(runs) {
-            score += runs;
-            addBall();
-            logAction(runs);
+      function showPopup(type) {
+        popup.style.display = "block";
+        overlay.style.display = "block";
+        popupTitle.textContent = `Select Runs for ${type}`;
+        popupButtons.innerHTML = "";
+
+        for (let i = 0; i <= 6; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = `${type} + ${i}`;
+          btn.onclick = () => {
+            handleExtra(type, "extra", i);
+            hidePopup();
+          };
+          popupButtons.appendChild(btn);
         }
+      }
 
-        function addWicket() {
-            wickets += 1;
-            addBall();
-            logAction('W');
-        }
+      function handleExtra(type, color, runs) {
+        score += 1 + runs; // 1 for the extra plus any additional runs
+        logAction(runs, color, type);
+        updateDisplay();
+      }
 
-        function addBall() {
-            balls += 1;
-            if (balls >= 6) {
-                overs += 1;
-                balls = 0;
-            }
-            updateDisplay();
-        }
+      function logAction(runs, color, type = "") {
+        actions.push({ runs, color, type, overs, balls, score, wickets });
+        logActionCommon(runs, color, type);
+      }
 
-        function showPopup(type) {
-            popup.style.display = 'block';
-            overlay.style.display = 'block';
-            popupTitle.textContent = `Select Runs for ${type}`;
-            popupButtons.innerHTML = '';
+      function logActionDisplay(runs, color, type = "") {
+        logActionCommon(runs, color, type);
+      }
 
-            for (let i = 0; i <= 6; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = `${type} + ${i}`;
-                btn.onclick = () => {
-                    handleExtra(type, i);
-                    hidePopup();
-                };
-                popupButtons.appendChild(btn);
-            }
-        }
+      function logActionCommon(runs, color, type = "") {
+        const log = document.createElement("div");
+        log.className = `ball-log ${color}`;
+        log.innerHTML = `<div>${runs}</div>${type ? `<div>${type}</div>` : ""}`;
+        logContainer.appendChild(log);
+        logContainer.scrollLeft = logContainer.scrollWidth;
+        saveToSessionStorage();
+      }
 
-        function handleExtra(type, runs) {
-            score += 1 + runs; // 1 for the extra plus any additional runs
-            logAction(runs, type);
-            updateDisplay();
-        }
+      function undo() {
+        if (actions.length === 0) return;
+        actions.pop();
+        resetState();
+        actions.forEach((action) => {
+          score = action.score;
+          wickets = action.wickets;
+          overs = action.overs;
+          balls = action.balls;
+        });
+        updateDisplay();
+        logContainer.innerHTML = "";
+        actions.forEach((action) =>
+          logActionDisplay(action.runs, action.color, action.type)
+        );
+      }
 
-        function logAction(runs, type = '') {
-            actions.push({ runs, type, overs, balls, score, wickets });
-            const log = document.createElement('div');
-            log.className = 'ball-log';
-            log.innerHTML = `<div>${runs}</div>${type ? `<div>${type}</div>` : ''}`;
-            logContainer.appendChild(log);
-            logContainer.scrollLeft = logContainer.scrollWidth;
-        }
+      function hidePopup() {
+        popup.style.display = "none";
+        overlay.style.display = "none";
+      }
 
-        function undo() {
-            if (actions.length === 0) return;
-            actions.pop();
-            resetState();
-            actions.forEach(action => {
-                score = action.score;
-                wickets = action.wickets;
-                overs = action.overs;
-                balls = action.balls;
-            });
-            updateDisplay();
-            logContainer.innerHTML = '';
-            actions.forEach(action => logAction(action.runs, action.type));
-        }
+      function resetState() {
+        score = 0;
+        wickets = 0;
+        balls = 0;
+        overs = 0;
+      }
 
-        function hidePopup() {
-            popup.style.display = 'none';
-            overlay.style.display = 'none';
-        }
+      function saveToSessionStorage() {
+        sessionStorage.setItem("score", score);
+        sessionStorage.setItem("wickets", wickets);
+        sessionStorage.setItem("balls", balls);
+        sessionStorage.setItem("overs", overs);
+        sessionStorage.setItem("actions", JSON.stringify(actions));
+        sessionStorage.setItem("logHTML", logContainer.innerHTML);
+      }
 
-        function resetState() {
-            score = 0;
-            wickets = 0;
-            balls = 0;
-            overs = 0;
-        }
+      function loadFromSessionStorage() {
+        score = parseInt(sessionStorage.getItem("score")) || 0;
+        wickets = parseInt(sessionStorage.getItem("wickets")) || 0;
+        balls = parseInt(sessionStorage.getItem("balls")) || 0;
+        overs = parseInt(sessionStorage.getItem("overs")) || 0;
+        actions = JSON.parse(sessionStorage.getItem("actions")) || [];
+        logContainer.innerHTML = sessionStorage.getItem("logHTML") || "";
+        updateDisplay();
+      }
+      window.onload = loadFromSessionStorage;
     </script>
-</body>
+  </body>
 </html>
