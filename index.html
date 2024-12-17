@@ -102,6 +102,7 @@
         box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
         z-index: 10;
         text-align: center;
+        width: 75%;
       }
       .popup button {
         background: #2980b9;
@@ -152,50 +153,113 @@
       .shade {
         background: lightgray;
       }
+      input {
+        height: 30px;
+      }
+      #start-container {
+        border: 1px solid gray;
+        padding: 10px;
+      }
+      #overs-error {
+        color: red;
+      }
+      .restart {
+        justify-content: left;
+        display: flex;
+      }
+      .won {
+        font-size: 3.5rem;
+        color: green;
+        font-weight: bold;
+      }
+      .givenTarget {
+        font-size: 3.5rem;
+        color: red;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>🏏 Cricket Score</h1>
-      <div class="score-container">
-        <div class="score">
-          <span id="score">0</span>/<span id="wickets">0</span>
+      <div id="start-container">
+        <div>
+          Enter Overs:
+          <input id="totalOvers" type="number" name="overs" required />
+          <div>
+            <span id="overs-error">Overs is required</span>
+          </div>
         </div>
-        <div class="over">
-          (<span id="overs">0</span>.<span id="balls">0</span>/)
+        <br />
+        <div>
+          Enter Target:
+          <input id="target" type="number" name="target" />
+        </div>
+        <br />
+        <div>
+          <button
+            class="buttons"
+            style="
+              padding: 4px;
+              width: 150px;
+              background: darkblue;
+              color: #fff;
+            "
+            onclick="startScoring()"
+          >
+            Start
+          </button>
         </div>
       </div>
+      <div id="back">
+        <button onclick="restart()" class="restart">back</button>
+      </div>
+      <div id="won">
+        <div class="won">You Won!!</div>
+      </div>
+      <div>
+        <div class="givenTarget" id="givenTarget"></div>
+      </div>
+      <div id="score-container">
+        <h1>🏏 Cricket Score</h1>
+        <div class="score-container">
+          <div class="score">
+            <span id="score">0</span>/<span id="wickets">0</span>
+          </div>
+          <div class="over">
+            (<span id="overs">0</span>.<span id="balls">0</span>/<span
+              id="boardTotalOvers"
+              >0</span
+            >)
+          </div>
+        </div>
 
-      <div class="log-container" id="logContainer"></div>
+        <div style="color: red" id="requiredRuns"></div>
+        <div class="log-container" id="logContainer"></div>
 
-      <div class="buttons">
-        <table>
-          <tr>
-            <td onclick="addRuns(0)">0</td>
-            <td onclick="addRuns(1)">1</td>
-            <td onclick="addRuns(2)">2</td>
-            <td class="shade" onclick="undo()">UNDO</td>
-          </tr>
-          <tr>
-            <td onclick="addRuns(3)">3</td>
-            <td onclick="addRuns(4)">4</td>
-            <td onclick="addRuns(6)">6</td>
-            <td class="shade" onclick="addWicket()">OUT</td>
-          </tr>
-          <tr>
-            <td class="shade" onclick="showPopup('WD')">WD</td>
-            <td class="shade" onclick="showPopup('NB')">NB</td>
-            <td class="shade" onclick="showPopup('BY')">BYE</td>
-            <td class="shade" onclick="showPopup('LB')">LB</td>
-          </tr>
-          <!-- <tr>
-            <td colspan="4">
-              <button class="cancel-btn" onclick="hidePopup()">
-                Clear cache
-              </button>
-            </td>
-          </tr> -->
-        </table>
+        <div class="buttons">
+          <table>
+            <tr>
+              <td onclick="addRuns(0)">0</td>
+              <td onclick="addRuns(1)">1</td>
+              <td onclick="addRuns(2)">2</td>
+              <td class="shade" onclick="undo()">UNDO</td>
+            </tr>
+            <tr>
+              <td onclick="addRuns(3)">3</td>
+              <td onclick="addRuns(4)">4</td>
+              <td onclick="addRuns(6)">6</td>
+              <td class="shade" onclick="addWicket()" style="color: #e74c3c">
+                OUT
+              </td>
+            </tr>
+            <tr>
+              <td class="shade" onclick="showPopup('WD')">WD</td>
+              <td class="shade" onclick="showPopup('NB')">NB</td>
+              <td class="shade" onclick="showPopup('BY')">BYE</td>
+              <td class="shade" onclick="showPopup('LB')">LB</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -212,18 +276,72 @@
       let balls = 0;
       let overs = 0;
       let actions = [];
+
+      let totalOvers = parseInt(sessionStorage.getItem("totalOvers") || 0);
+      let target = parseInt(sessionStorage.getItem("target") || 0);
+
       const logContainer = document.getElementById("logContainer");
       const popup = document.getElementById("popup");
       const overlay = document.getElementById("overlay");
       const popupTitle = document.getElementById("popupTitle");
       const popupButtons = document.getElementById("popupButtons");
 
+      const startContainer = document.getElementById("start-container");
+      const scoreContainer = document.getElementById("score-container");
+      const oversError = document.getElementById("overs-error");
+      const requiredRuns = document.getElementById("requiredRuns");
+      const won = document.getElementById("won");
+      const back = document.getElementById("back");
+      const givenTarget = document.getElementById("givenTarget");
+      const totalOversDocument = document.getElementById("totalOvers");
+      const targetDocument = document.getElementById("target");
+
+      function startScoring() {
+        totalOvers = parseInt(totalOversDocument.value);
+        target = parseInt(targetDocument.value);
+        showRequired();
+        sessionStorage.setItem("totalOvers", totalOvers);
+        sessionStorage.setItem("target", target);
+
+        if (isNaN(totalOvers) || totalOvers == 0) {
+          oversError.style.display = "";
+        } else {
+          scoreContainer.style.display = "";
+          startContainer.style.display = "none";
+          back.style.display = "";
+          document.getElementById("boardTotalOvers").textContent = totalOvers;
+          loadFromSessionStorage();
+        }
+      }
+
+      function showRequired() {
+        if (target > 0) {
+          requiredRuns.textContent = `Required ${target - score} of ${
+            totalOvers * 6 - (overs * 6 + balls)
+          } balls`;
+        } else {
+          requiredRuns.style.display = "none";
+        }
+
+        if (target - score <= 0) {
+          won.style.display = "";
+          back.style.display = "";
+          scoreContainer.style.display = "none";
+          startContainer.style.display = "none";
+        }
+      }
+
       function updateDisplay() {
         document.getElementById("score").textContent = score;
         document.getElementById("wickets").textContent = wickets;
         document.getElementById("overs").textContent = overs;
         document.getElementById("balls").textContent = balls;
+        if (score == 0) {
+          logContainer.innerHTML = "";
+        }
+        showRequired();
         saveToSessionStorage();
+        overCompleted();
       }
 
       function addRuns(runs) {
@@ -289,6 +407,36 @@
         saveToSessionStorage();
       }
 
+      function overCompleted() {
+        if (overs == totalOvers && isNaN(target)) {
+          givenTarget.textContent = `Target ${score}`;
+          givenTarget.style.display = "";
+          back.style.display = "";
+          scoreContainer.style.display = "none";
+          startContainer.style.display = "none";
+        } else {
+          if (wickets >= 10) {
+            givenTarget.textContent = `You lost`;
+            givenTarget.style.display = "";
+            back.style.display = "";
+            scoreContainer.style.display = "none";
+            startContainer.style.display = "none";
+          }
+        }
+      }
+
+      function restart() {
+        scoreContainer.style.display = "none";
+        oversError.style.display = "none";
+        startContainer.style.display = "";
+        won.style.display = "none";
+        back.style.display = "none";
+        givenTarget.style.display = "none";
+
+        sessionStorage.clear();
+        resetState();
+      }
+
       function undo() {
         if (actions.length === 0) return;
         actions.pop();
@@ -332,11 +480,26 @@
         wickets = parseInt(sessionStorage.getItem("wickets")) || 0;
         balls = parseInt(sessionStorage.getItem("balls")) || 0;
         overs = parseInt(sessionStorage.getItem("overs")) || 0;
+        totalOvers = parseInt(sessionStorage.getItem("totalOvers") || 0);
         actions = JSON.parse(sessionStorage.getItem("actions")) || [];
         logContainer.innerHTML = sessionStorage.getItem("logHTML") || "";
+
         updateDisplay();
       }
-      window.onload = loadFromSessionStorage;
+
+      if (totalOvers == 0) {
+        scoreContainer.style.display = "none";
+        oversError.style.display = "none";
+        won.style.display = "none";
+        back.style.display = "none";
+      } else {
+        scoreContainer.style.display = "";
+        startContainer.style.display = "none";
+        won.style.display = "none";
+
+        document.getElementById("boardTotalOvers").textContent = totalOvers;
+        window.onload = loadFromSessionStorage;
+      }
     </script>
   </body>
 </html>
