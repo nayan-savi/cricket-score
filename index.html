@@ -315,6 +315,7 @@
       }
 
       function showRequired() {
+        requiredRuns.style.display = "";
         if (target > 0) {
           requiredRuns.textContent = `Required ${target - score} of ${
             totalOvers * 6 - (overs * 6 + balls)
