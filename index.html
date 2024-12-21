@@ -196,6 +196,27 @@
         </style>
     </head>
     <body>
+        <div
+            style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                color: #000;
+                padding: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            "
+        >
+            <input
+                type="checkbox"
+                id="selectAudio"
+                style="width: 18px"
+                onclick="loadAudio()"
+            />
+            Audio
+        </div>
+        <div id="audios"></div>
         <div class="container">
             <div id="start-container">
                 <div
@@ -303,18 +324,18 @@
                 <div class="buttons">
                     <table>
                         <tr>
-                            <td onclick="addRuns(0)">0</td>
-                            <td onclick="addRuns(1)">1</td>
-                            <td onclick="addRuns(2)">2</td>
+                            <td onclick="play(0);addRuns(0)">0</td>
+                            <td onclick="play(1);addRuns(1)">1</td>
+                            <td onclick="play(2);addRuns(2)">2</td>
                             <td class="shade" onclick="undo()">UNDO</td>
                         </tr>
                         <tr>
-                            <td onclick="addRuns(3)">3</td>
-                            <td onclick="addRuns(4)">4</td>
-                            <td onclick="addRuns(6)">6</td>
+                            <td onclick="play(3);addRuns(3)">3</td>
+                            <td onclick="play(4);addRuns(4)">4</td>
+                            <td onclick="play(6);addRuns(6)">6</td>
                             <td
                                 class="shade"
-                                onclick="addWicket()"
+                                onclick="play('out');addWicket()"
                                 style="color: #e74c3c"
                             >
                                 OUT
@@ -339,6 +360,7 @@
         </div>
 
         <script>
+            const audioList = ["0", "1", "2", "3", "4", "6", "out"];
             let score = 0;
             let wickets = 0;
             let balls = 0;
@@ -367,8 +389,6 @@
             const totalOversDocument = document.getElementById("totalOvers");
             const targetDocument = document.getElementById("target");
             const inningsDisplay = document.getElementById("innings");
-
-            const audios = document.getElementById("audios");
 
             function startScoring() {
                 totalOvers = parseInt(totalOversDocument.value);
@@ -626,6 +646,31 @@
                     targetDocument.disabled = false;
                 }
             }
+
+            function play(name) {
+                const selectAudio = document.getElementById("selectAudio");
+                if (selectAudio.checked) {
+                    const audio = document.getElementById(`audio${name}`);
+                    audio.muted = false;
+                    audio.play();
+                }
+            }
+
+            function loadAudio() {
+                const selectAudio = document.getElementById("selectAudio");
+                if (selectAudio.checked) {
+                    audioList.forEach((filename) => {
+                        const audioTag = document.createElement("audio");
+                        audioTag.id = `audio${filename}`;
+                        audioTag.src = `audio/${filename}.mp3`;
+                        audioTag.muted = true;
+                        audioTag.preload = "auto";
+                        audios.appendChild(audioTag);
+                    });
+                }
+            }
+
+            loadAudio();
 
             if (totalOvers == 0) {
                 scoreContainer.style.display = "none";
