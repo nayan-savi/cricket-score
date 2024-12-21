@@ -182,6 +182,12 @@
         font-style: italic;
         color: red;
       }
+      .innings {
+        background: green;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -220,6 +226,7 @@
       </div>
       <div id="back">
         <button onclick="restart()" class="restart">back</button>
+        <div id="innings" class="innings"></div>
       </div>
       <div id="won">
         <div class="won">You Won!!</div>
@@ -303,10 +310,12 @@
       const givenTarget = document.getElementById("givenTarget");
       const totalOversDocument = document.getElementById("totalOvers");
       const targetDocument = document.getElementById("target");
+      const inningsDisplay = document.getElementById("innings");
 
       function startScoring() {
         totalOvers = parseInt(totalOversDocument.value);
         target = parseInt(targetDocument.value);
+        showInnings();
         showRequired();
         sessionStorage.setItem("totalOvers", totalOvers);
         sessionStorage.setItem("target", target);
@@ -319,6 +328,14 @@
           back.style.display = "";
           document.getElementById("boardTotalOvers").textContent = totalOvers;
           loadFromSessionStorage();
+        }
+      }
+
+      function showInnings() {
+        if (isNaN(target)) {
+          inningsDisplay.textContent = "1st Innings";
+        } else {
+          inningsDisplay.textContent = "2nd Innings";
         }
       }
 
@@ -492,7 +509,7 @@
         totalOvers = parseInt(sessionStorage.getItem("totalOvers") || 0);
         actions = JSON.parse(sessionStorage.getItem("actions")) || [];
         logContainer.innerHTML = sessionStorage.getItem("logHTML") || "";
-
+        showInnings();
         updateDisplay();
       }
 
