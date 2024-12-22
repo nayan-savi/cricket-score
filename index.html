@@ -520,6 +520,9 @@
 
             function handleExtra(type, color, runs) {
                 score += 1 + runs; // 1 for the extra plus any additional runs
+                if (type == "BY") {
+                    addBall();
+                }
                 logAction(runs, color, type);
                 updateDisplay();
             }
