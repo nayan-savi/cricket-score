@@ -520,7 +520,7 @@
 
             function handleExtra(type, color, runs) {
                 score += 1 + runs; // 1 for the extra plus any additional runs
-                if (type == "BY") {
+                if (type == "BY" || type == "LB") {
                     addBall();
                 }
                 logAction(runs, color, type);
