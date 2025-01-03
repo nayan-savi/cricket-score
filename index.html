@@ -12,7 +12,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                min-height: 100vh;
+                min-height: 97vh;
                 background-image: url("background4.jpg");
             }
             .container {
@@ -523,6 +523,9 @@
 
             function handleExtra(type, color, runs) {
                 score += 1 + runs; // 1 for the extra plus any additional runs
+                if (type == "BY" || type == "LB") {
+                    addBall();
+                }
                 logAction(runs, color, type);
                 updateDisplay();
             }
@@ -645,6 +648,7 @@
                 targetError.style.display = "none";
                 if (value == 1) {
                     targetDocument.disabled = true;
+                    targetDocument.value = "";
                 } else if (value == 2) {
                     targetDocument.disabled = false;
                 }
