@@ -360,7 +360,7 @@
         </div>
 
         <script>
-            const audioList = ["0", "1", "2", "3", "4", "6", "out"];
+            const audioList = ["0", "1", "2", "3", "4", "6", "out", "over"];
             let score = 0;
             let wickets = 0;
             let balls = 0;
@@ -495,6 +495,9 @@
             function addBall() {
                 balls += 1;
                 if (balls >= 6) {
+                    setTimeout(() => {
+                        play("over");
+                    }, 1000);
                     overs += 1;
                     balls = 0;
                 }
