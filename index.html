@@ -112,6 +112,7 @@
             .popup .cancel-btn {
                 background: #e74c3c;
             }
+
             .overlay {
                 display: none;
                 position: fixed;
@@ -192,6 +193,10 @@
             }
             .filed {
                 font-weight: bold;
+            }
+
+            .out-btns > div > button {
+                width: 50px;
             }
         </style>
     </head>
@@ -335,7 +340,7 @@
                             <td onclick="play(6);addRuns(6)">6</td>
                             <td
                                 class="shade"
-                                onclick="play('out');addWicket()"
+                                onclick="showOutPopup()"
                                 style="color: #e74c3c"
                             >
                                 OUT
@@ -359,6 +364,43 @@
             <button class="cancel-btn" onclick="hidePopup()">Cancel</button>
         </div>
 
+        <div class="popup" id="popupout">
+            <div
+                style="
+                    display: flex;
+                    justify-content: center;
+                    margin-bottom: 10px;
+                "
+            >
+                <!-- <div style="margin-right: 40px">
+                    <h4>Delivery Type</h4>
+                    <div class="out-btns">
+                        <div>
+                            <button>WD</button>
+                            <button>NB</button>
+                        </div>
+                        <div>
+                            <button>BYE</button>
+                            <button>LB</button>
+                        </div>
+                    </div>
+                </div> -->
+                <div>
+                    <h4>Runs Scored</h4>
+                    <input
+                        type="number"
+                        style="width: 100px"
+                        id="scored"
+                        placeholder="runs"
+                    />
+                </div>
+            </div>
+            <button class="cancel-btn" onclick="play('out');addWicket();">
+                OUT
+            </button>
+            <button class="" onclick="hidePopup()">Cancel</button>
+        </div>
+
         <script>
             const audioList = ["0", "1", "2", "3", "4", "6", "out", "over"];
             let score = 0;
@@ -374,9 +416,11 @@
 
             const logContainer = document.getElementById("logContainer");
             const popup = document.getElementById("popup");
+            const popupout = document.getElementById("popupout");
             const overlay = document.getElementById("overlay");
             const popupTitle = document.getElementById("popupTitle");
             const popupButtons = document.getElementById("popupButtons");
+            const popupOutButton = document.getElementById("popupOutButton");
 
             const startContainer = document.getElementById("start-container");
             const scoreContainer = document.getElementById("score-container");
@@ -487,9 +531,14 @@
             }
 
             function addWicket() {
+                const runScored = document.getElementById("scored");
+                if (runScored.value > 0) {
+                    score += parseInt(runScored.value);
+                }
                 wickets += 1;
                 addBall();
-                logAction("W", "red");
+                logAction(runScored.value, "red", "W");
+                hidePopup();
             }
 
             function addBall() {
@@ -519,6 +568,12 @@
                     };
                     popupButtons.appendChild(btn);
                 }
+            }
+
+            function showOutPopup() {
+                popupout.style.display = "block";
+                overlay.style.display = "block";
+                document.getElementById("scored").value = undefined;
             }
 
             function handleExtra(type, color, runs) {
@@ -608,6 +663,7 @@
 
             function hidePopup() {
                 popup.style.display = "none";
+                popupout.style.display = "none";
                 overlay.style.display = "none";
             }
 
