@@ -204,11 +204,11 @@
                 border-radius: 100%;
                 margin-right: 2px;
                 margin-left: 2px;
-                height: 20px;
+                height: 33px;
                 align-self: center;
                 color: #000;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 20px;
             }
 
             .inactive-player {
@@ -216,11 +216,11 @@
                 border-radius: 100%;
                 margin-right: 2px;
                 margin-left: 2px;
-                height: 20px;
+                height: 33px;
                 align-self: center;
                 color: #000;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 20px;
             }
             .player-container {
                 width: 50%;
@@ -370,7 +370,7 @@
                         </div>
                         <div id="player1">
                             <div style="display: flex">
-                                <div style="width: 15%; align-self: center">
+                                <div style="width: 23%; align-self: center">
                                     <div
                                         class="active-player"
                                         id="player1Active"
@@ -383,7 +383,7 @@
                                     type="text"
                                     id="player1Name"
                                     onchange="updatePlayerName(1)"
-                                    style="width: 80%; font-size: 16px"
+                                    style="width: 70%; font-size: 16px"
                                 />
                             </div>
                             <div>
@@ -402,7 +402,7 @@
                         </div>
                         <div id="player2">
                             <div style="display: flex">
-                                <div style="width: 15%; align-self: center">
+                                <div style="width: 23%; align-self: center">
                                     <div
                                         class="active-player"
                                         id="player2Active"
@@ -415,7 +415,7 @@
                                     type="text"
                                     id="player2Name"
                                     onchange="updatePlayerName(2)"
-                                    style="width: 80%; font-size: 16px"
+                                    style="width: 70%; font-size: 16px"
                                 />
                             </div>
                             <div>
@@ -749,13 +749,13 @@
             }
 
             function isPlayerActive() {
+                const ap = sessionStorage.getItem("activePlayer");
                 const p1 = JSON.parse(sessionStorage.getItem("player1"));
                 const p2 = JSON.parse(sessionStorage.getItem("player2"));
                 if (p1.name == "" || p2.name == "") {
                     errorPlayers.innerHTML = "Please add players";
                     return false;
                 }
-                const ap = sessionStorage.getItem("activePlayer");
                 if (ap == "") {
                     errorPlayers.innerHTML = `
                         Please select the
@@ -945,7 +945,7 @@
             }
 
             function showPopup(type) {
-                if (isPlayerActive()) {
+                if (!isPlayerActive()) {
                     showActivePlayerError.style.display = "block";
                     overlay.style.display = "block";
                     return;
