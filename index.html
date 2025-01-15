@@ -198,43 +198,6 @@
             .out-btns > div > button {
                 width: 50px;
             }
-
-            .active-player {
-                background-color: darkgreen;
-                border-radius: 100%;
-                margin-right: 2px;
-                margin-left: 2px;
-                height: 33px;
-                align-self: center;
-                color: #000;
-                font-weight: bold;
-                font-size: 20px;
-            }
-
-            .inactive-player {
-                background-color: gray;
-                border-radius: 100%;
-                margin-right: 2px;
-                margin-left: 2px;
-                height: 33px;
-                align-self: center;
-                color: #000;
-                font-weight: bold;
-                font-size: 20px;
-            }
-            .player-container {
-                width: 50%;
-                display: flex;
-                border-right: 1px solid;
-                flex-direction: column;
-            }
-
-            .container-box {
-                display: flex;
-                justify-content: center;
-                width: 100%;
-                border: 1px solid;
-            }
         </style>
     </head>
     <body>
@@ -360,73 +323,6 @@
                     </div>
                 </div>
 
-                <div class="container-box">
-                    <div class="player-container">
-                        <div>Player 1</div>
-                        <div id="addPlayer1" class="buttons">
-                            <button onclick="showPlayerPopup(1)">
-                                Add Player1
-                            </button>
-                        </div>
-                        <div id="player1">
-                            <div style="display: flex">
-                                <div style="width: 23%; align-self: center">
-                                    <div
-                                        class="active-player"
-                                        id="player1Active"
-                                        onclick="changeStrick(1)"
-                                    >
-                                        🏏
-                                    </div>
-                                </div>
-                                <input
-                                    type="text"
-                                    id="player1Name"
-                                    onchange="updatePlayerName(1)"
-                                    style="width: 70%; font-size: 16px"
-                                />
-                            </div>
-                            <div>
-                                <span id="p1Balls">0</span>(<span id="p1Score"
-                                    >0</span
-                                >)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="player-container">
-                        <div>Player 2</div>
-                        <div id="addPlayer2" class="buttons">
-                            <button onclick="showPlayerPopup(2)">
-                                Add Player2
-                            </button>
-                        </div>
-                        <div id="player2">
-                            <div style="display: flex">
-                                <div style="width: 23%; align-self: center">
-                                    <div
-                                        class="active-player"
-                                        id="player2Active"
-                                        onclick="changeStrick(2)"
-                                    >
-                                        🏏
-                                    </div>
-                                </div>
-                                <input
-                                    type="text"
-                                    id="player2Name"
-                                    onchange="updatePlayerName(2)"
-                                    style="width: 70%; font-size: 16px"
-                                />
-                            </div>
-                            <div>
-                                <span id="p2Balls">0</span>(<span id="p2Score"
-                                    >0</span
-                                >)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div style="color: red" id="requiredRuns"></div>
                 <div class="log-container" id="logContainer"></div>
 
@@ -490,83 +386,19 @@
                     </div>
                 </div> -->
                 <div>
-                    <div style="font-weight: bold; margin-bottom: 4px">
-                        Runs Scored
-                    </div>
+                    <h4>Runs Scored</h4>
                     <input
                         type="number"
                         style="width: 100px"
                         id="scored"
                         placeholder="runs"
                     />
-                    <div
-                        style="
-                            justify-content: center;
-                            display: flex;
-                            align-items: center;
-                        "
-                    >
-                        <label class="filed"> Select Player: </label>
-                        <div>
-                            <label class="lable-radio">
-                                <input
-                                    type="radio"
-                                    class="radio"
-                                    name="p"
-                                    id="p1"
-                                    onclick="outPlayer(1)"
-                                />
-                                <div id="showPlayer1"></div>
-                            </label>
-
-                            <label class="lable-radio">
-                                <input
-                                    type="radio"
-                                    class="radio"
-                                    name="p"
-                                    id="p2"
-                                    onclick="outPlayer(2)"
-                                />
-                                <div id="showPlayer2"></div>
-                            </label>
-                        </div>
-                    </div>
                 </div>
             </div>
             <button class="cancel-btn" onclick="play('out');addWicket();">
                 OUT
             </button>
             <button class="" onclick="hidePopup()">Cancel</button>
-        </div>
-
-        <div class="popup" id="popupAddPlayer">
-            <h3 id="playerPopupTitle">Add Player Name</h3>
-            <div style="margin-bottom: 10px">
-                Name :
-                <input type="text" id="playerName" style="font-size: 16px" />
-            </div>
-            <button onclick="addPlayerName()" style="width: 62px">Add</button>
-            <button class="cancel-btn" onclick="hidePopup()">Cancel</button>
-        </div>
-
-        <div class="popup" id="showActivePlayerError">
-            <h3 style="color: red">Error</h3>
-            <div
-                id="errorPlayers"
-                style="
-                    display: flex;
-                    margin-bottom: 10px;
-                    justify-content: center;
-                "
-            >
-                <!-- Please select the
-                <div style="width: 10%; align-self: center">
-                    <div class="inactive-player" id="player2Active">🏏</div>
-                </div>
-                stricker -->
-            </div>
-
-            <button class="cancel-btn" onclick="hidePopup()">Cancel</button>
         </div>
 
         <script>
@@ -576,9 +408,6 @@
             let balls = 0;
             let overs = 0;
             let actions = [];
-            let playersHistory = [];
-            let player1History = [];
-            let player2History = [];
 
             let totalOvers = parseInt(
                 sessionStorage.getItem("totalOvers") || 0
@@ -605,38 +434,6 @@
             const targetDocument = document.getElementById("target");
             const inningsDisplay = document.getElementById("innings");
 
-            // players
-            const showActivePlayerError = document.getElementById(
-                "showActivePlayerError"
-            );
-            const errorPlayers = document.getElementById("errorPlayers");
-            const player1Active = document.getElementById("player1Active");
-            const player2Active = document.getElementById("player2Active");
-
-            const player1 = document.getElementById("player1");
-            const player2 = document.getElementById("player2");
-            const popupAddPlayer = document.getElementById("popupAddPlayer");
-            let selectedPlayer = null;
-            let selectedOutPlayer = null;
-            const player1Name = document.getElementById("player1Name");
-            const player2Name = document.getElementById("player2Name");
-            const addPlayer1 = document.getElementById("addPlayer1");
-            const addPlayer2 = document.getElementById("addPlayer2");
-            const playerName = document.getElementById("playerName");
-            const showPlayer1 = document.getElementById("showPlayer1");
-            const showPlayer2 = document.getElementById("showPlayer2");
-
-            const p1Balls = document.getElementById("p1Balls");
-            const p1Score = document.getElementById("p1Score");
-            const p2Balls = document.getElementById("p2Balls");
-            const p2Score = document.getElementById("p2Score");
-
-            const player = {
-                name: "",
-                score: 0,
-                balls: 0,
-            };
-
             function startScoring() {
                 totalOvers = parseInt(totalOversDocument.value);
                 target = parseInt(targetDocument.value);
@@ -658,24 +455,6 @@
                 back.style.display = "";
                 document.getElementById("boardTotalOvers").textContent =
                     totalOvers;
-                sessionStorage.setItem("activePlayer", "");
-                sessionStorage.setItem("player1", JSON.stringify(player));
-                sessionStorage.setItem("player2", JSON.stringify(player));
-                sessionStorage.setItem(
-                    "player1History",
-                    JSON.stringify(player1History)
-                );
-                sessionStorage.setItem(
-                    "player2History",
-                    JSON.stringify(player2History)
-                );
-                sessionStorage.setItem(
-                    "players",
-                    JSON.stringify(playersHistory)
-                );
-                sessionStorage.setItem("extras", 0);
-                player1.style.display = "none";
-                player2.style.display = "none";
                 loadFromSessionStorage();
             }
 
@@ -731,10 +510,6 @@
                 }
             }
 
-            function changeStrick(ap) {
-                activatePlayer(ap);
-            }
-
             function updateDisplay() {
                 document.getElementById("score").textContent = score;
                 document.getElementById("wickets").textContent = wickets;
@@ -748,186 +523,21 @@
                 overCompleted();
             }
 
-            function isPlayerActive() {
-                const ap = sessionStorage.getItem("activePlayer");
-                const p1 = JSON.parse(sessionStorage.getItem("player1"));
-                const p2 = JSON.parse(sessionStorage.getItem("player2"));
-                if (p1.name == "" || p2.name == "") {
-                    errorPlayers.innerHTML = "Please add players";
-                    return false;
-                }
-                if (ap == "") {
-                    errorPlayers.innerHTML = `
-                        Please select the
-                        <div style="width: 10%; align-self: center">
-                            <div class="inactive-player" id="player2Active">🏏</div>
-                        </div>
-                        stricker
-                    `;
-                    return false;
-                }
-                return true;
-            }
-
             function addRuns(runs) {
-                if (!isPlayerActive()) {
-                    showActivePlayerError.style.display = "block";
-                    overlay.style.display = "block";
-                    return;
-                }
                 score += runs;
                 addBall();
                 const cssClass = runs == 4 ? "four" : runs == 6 ? "six" : "run";
-                const ap = sessionStorage.getItem("activePlayer");
-                updateScoreToPlayer(runs, 1, ap);
                 logAction(runs, cssClass);
-                switchPlayer(runs, false);
-            }
-
-            function updateScoreToPlayer(runs, ball, ap) {
-                const current = JSON.parse(
-                    sessionStorage.getItem(`player${ap}`)
-                );
-                updateToPlayerHistory(ap, current);
-                current.score += runs;
-                current.balls += ball;
-                sessionStorage.setItem(`player${ap}`, JSON.stringify(current));
-
-                updateScoreToUI(ap);
-            }
-
-            function updateToPlayerHistory(ap, current) {
-                const ph = JSON.parse(
-                    sessionStorage.getItem(`player${ap}History`)
-                );
-                ph.push(current);
-                sessionStorage.setItem(
-                    `player${ap}History`,
-                    JSON.stringify(ph)
-                );
-            }
-
-            function updateScoreToUI(ap) {
-                const current = JSON.parse(
-                    sessionStorage.getItem(`player${ap}`)
-                );
-                if (ap == 1) {
-                    p1Balls.textContent = current.balls;
-                    p1Score.textContent = current.score;
-                } else if (ap == 2) {
-                    p2Balls.textContent = current.balls;
-                    p2Score.textContent = current.score;
-                }
-            }
-
-            function switchPlayer(runs, isOverCompleted) {
-                const player = parseInt(sessionStorage.getItem("activePlayer"));
-                if (runs > 0) {
-                    if (player == 1) {
-                        if (runs % 2 != 0) {
-                            activatePlayer(2);
-                        }
-                    } else {
-                        if (runs % 2 != 0) {
-                            activatePlayer(1);
-                        }
-                    }
-                }
-            }
-
-            function activatePlayer(player) {
-                if (player == 1) {
-                    player1Active.className = "active-player";
-                    player2Active.className = "inactive-player";
-                    sessionStorage.setItem("activePlayer", 1);
-                } else if (player == 2) {
-                    player1Active.className = "inactive-player";
-                    player2Active.className = "active-player";
-                    sessionStorage.setItem("activePlayer", 2);
-                } else {
-                    player1Active.className = "inactive-player";
-                    player2Active.className = "inactive-player";
-                }
-            }
-
-            function showPlayerPopup(player) {
-                popupAddPlayer.style.display = "block";
-                overlay.style.display = "block";
-                const playerPopupTitle =
-                    document.getElementById("playerPopupTitle");
-                playerPopupTitle.textContent = `Add Player${player} Name`;
-                selectedPlayer = player;
-                playerName.value = "";
-            }
-
-            function addPlayerName() {
-                const player = selectedPlayer;
-                if (player == 1) {
-                    const p1 = JSON.parse(sessionStorage.getItem("player1"));
-                    player1Name.value = playerName.value;
-                    p1.name = player1Name.value;
-                    sessionStorage.setItem("player1", JSON.stringify(p1));
-                    sessionStorage.setItem(
-                        "player1History",
-                        JSON.stringify(player1History)
-                    );
-                    player1.style.display = "";
-                    addPlayer1.style.display = "none";
-                    updateScoreToUI(1);
-                } else if (player == 2) {
-                    const p2 = JSON.parse(sessionStorage.getItem("player2"));
-                    player2Name.value = playerName.value;
-                    p2.name = player2Name.value;
-                    sessionStorage.setItem("player2", JSON.stringify(p2));
-                    sessionStorage.setItem(
-                        "player2History",
-                        JSON.stringify(player2History)
-                    );
-                    player2.style.display = "";
-                    addPlayer2.style.display = "none";
-                    updateScoreToUI(2);
-                }
-                hidePopup();
-            }
-
-            function updatePlayerName(pid) {
-                if (pid == 1) {
-                    const p1 = JSON.parse(sessionStorage.getItem("player1"));
-                    p1.name = player1Name.value;
-                    sessionStorage.setItem("player1", JSON.stringify(p1));
-                } else if (pid == 2) {
-                    const p2 = JSON.parse(sessionStorage.getItem("player2"));
-                    p2.name = player2Name.value;
-                    sessionStorage.setItem("player2", JSON.stringify(p2));
-                }
-            }
-
-            function outPlayer(player) {
-                selectedOutPlayer = JSON.parse(
-                    sessionStorage.getItem(`player${player}`)
-                );
-                selectedPlayer = player;
             }
 
             function addWicket() {
                 const runScored = document.getElementById("scored");
                 if (runScored.value > 0) {
                     score += parseInt(runScored.value);
-                    selectedOutPlayer.score += parseInt(runScored.value);
-                    selectedOutPlayer.balls += 1;
                 }
                 wickets += 1;
                 addBall();
                 logAction(runScored.value, "red", "W");
-                const players = JSON.parse(sessionStorage.getItem("players"));
-                players.push(selectedOutPlayer);
-                sessionStorage.setItem("players", JSON.stringify(players));
-                sessionStorage.setItem(
-                    `player${selectedPlayer}`,
-                    JSON.stringify(player)
-                );
-                sessionStorage.setItem("activePlayer", "");
-                loadPlayerDetais();
                 hidePopup();
             }
 
@@ -939,17 +549,11 @@
                     }, 1000);
                     overs += 1;
                     balls = 0;
-                    switchPlayer(1, true);
                 }
                 updateDisplay();
             }
 
             function showPopup(type) {
-                if (!isPlayerActive()) {
-                    showActivePlayerError.style.display = "block";
-                    overlay.style.display = "block";
-                    return;
-                }
                 popup.style.display = "block";
                 overlay.style.display = "block";
                 popupTitle.textContent = `Select Runs for ${type}`;
@@ -970,37 +574,18 @@
                 popupout.style.display = "block";
                 overlay.style.display = "block";
                 document.getElementById("scored").value = undefined;
-                const p1 = JSON.parse(sessionStorage.getItem("player1"));
-                showPlayer1.textContent = p1.name;
-                const p2 = JSON.parse(sessionStorage.getItem("player2"));
-                showPlayer2.textContent = p2.name;
             }
 
             function handleExtra(type, color, runs) {
-                const extra = 1 + runs; // 1 for the extra plus any additional runs
-                score += extra;
+                score += 1 + runs; // 1 for the extra plus any additional runs
                 if (type == "BY" || type == "LB") {
                     addBall();
                 }
                 logAction(runs, color, type);
-                updateExtrasToStorage(extra);
-                updateDisplay(extra);
-            }
-
-            function updateExtrasToStorage(extra) {
-                let extras = parseInt(sessionStorage.getItem("extras"));
-                extras += extra;
-                sessionStorage.setItem("extras", extras);
+                updateDisplay();
             }
 
             function logAction(runs, color, type = "") {
-                const strick = sessionStorage.getItem("activePlayer");
-                const player = JSON.parse(
-                    sessionStorage.getItem(`player${strick}`)
-                );
-                const playerHistory = JSON.parse(
-                    sessionStorage.getItem(`player${strick}History`)
-                );
                 actions.push({
                     runs,
                     color,
@@ -1009,9 +594,6 @@
                     balls,
                     score,
                     wickets,
-                    strick,
-                    player,
-                    playerHistory,
                 });
                 logActionCommon(runs, color, type);
             }
@@ -1033,7 +615,7 @@
 
             function overCompleted() {
                 if (overs == totalOvers && isNaN(target)) {
-                    givenTarget.textContent = `Score ${score}`;
+                    givenTarget.textContent = `Target ${score}`;
                     givenTarget.style.display = "";
                     back.style.display = "";
                     scoreContainer.style.display = "none";
@@ -1064,11 +646,7 @@
 
             function undo() {
                 if (actions.length === 0) return;
-                if (actions[actions.length - 1].type == "W") return;
-                const item = actions.pop();
-                // if (item.type == "W") {
-                //     return;
-                // }
+                actions.pop();
                 resetState();
                 actions.forEach((action) => {
                     score = action.score;
@@ -1081,46 +659,11 @@
                 actions.forEach((action) =>
                     logActionDisplay(action.runs, action.color, action.type)
                 );
-                activatePlayer(item.strick);
-                // undo for when out
-                // if (item.type == "W") {
-                //     const lastPlayer = JSON.parse(
-                //         sessionStorage.getItem("players")
-                //     );
-                //     const last = lastPlayer.pop();
-                //     sessionStorage.setItem(
-                //         `player${item.strick}`,
-                //         JSON.stringify(last)
-                //     );
-                //     sessionStorage.setItem(
-                //         "players",
-                //         JSON.stringify(lastPlayer)
-                //     );
-                //     loadPlayerDetais();
-                // }
-
-                if (item.type == "") {
-                    const player = JSON.parse(
-                        sessionStorage.getItem(`player${item.strick}History`)
-                    );
-                    sessionStorage.setItem(
-                        `player${item.strick}`,
-                        JSON.stringify(player.pop())
-                    );
-                    sessionStorage.setItem(
-                        `player${item.strick}History`,
-                        JSON.stringify(player)
-                    );
-                    sessionStorage.setItem("activePlayer", item.strick);
-                }
-                updateScoreToUI(item.strick);
             }
 
             function hidePopup() {
                 popup.style.display = "none";
                 popupout.style.display = "none";
-                popupAddPlayer.style.display = "none";
-                showActivePlayerError.style.display = "none";
                 overlay.style.display = "none";
             }
 
@@ -1153,33 +696,6 @@
                     sessionStorage.getItem("logHTML") || "";
                 showInnings();
                 updateDisplay();
-                loadPlayerDetais();
-                updateScoreToUI(1);
-                updateScoreToUI(2);
-            }
-
-            function loadPlayerDetais() {
-                const active = parseInt(sessionStorage.getItem("activePlayer"));
-                activatePlayer(active);
-                const p1 = JSON.parse(sessionStorage.getItem("player1"));
-                const p2 = JSON.parse(sessionStorage.getItem("player2"));
-                if (p1.name == null || p1.name == "") {
-                    player1.style.display = "none";
-                    addPlayer1.style.display = "";
-                } else {
-                    player1Name.value = p1.name;
-                    player1.style.display = "";
-                    addPlayer1.style.display = "none";
-                }
-
-                if (p2.name == null || p2.name == "") {
-                    player2.style.display = "none";
-                    addPlayer2.style.display = "";
-                } else {
-                    player2Name.value = p2.name;
-                    player2.style.display = "";
-                    addPlayer2.style.display = "none";
-                }
             }
 
             function selectedInnings(value) {
@@ -1230,6 +746,7 @@
                 scoreContainer.style.display = "";
                 startContainer.style.display = "none";
                 won.style.display = "none";
+
                 document.getElementById("boardTotalOvers").textContent =
                     totalOvers;
                 window.onload = loadFromSessionStorage;
